@@ -10,26 +10,17 @@ const helmet = require("helmet");
 // Create the Express application object
 const app = express();
 
-app.use(compression()); // Compress all routes
-app.use(helmet()); // Helmet to protect against well-known  web vulnerabilities
-app.use(express.static(path.join(__dirname, "public")));
-
-app.use("/", indexRouter);
-app.use("/users", usersRouter);
-app.use("/catalog", catalogRouter); // Add catalog routes to middleware chain.
-
+//Import routes for site
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-const catalogRouter = require("./routes/catalog");
-//Import routes for "catalog" area of site
 
 // Set up mongoose connection
 const mongoose = require("mongoose");
-const mongoDB = "mongodb+srv://associate-developer:Adev-1234@cluster0.rhomd7n.mongodb.net/local_library?retryWrites=true&w=majority";
+const dev_db_url = "mongodb+srv://associate-developer:Adev-1234@cluster0.rhomd7n.mongodb.net/local_library?retryWrites=true&w=majority";
+const mongoDB = process.env.MONGODB_URI || dev_db_url;
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
-
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -39,10 +30,12 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(compression()); // Compress all routes
+app.use(helmet());
+app.use(express.static(path.join(__dirname, "public")));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use("/", indexRouter);
+app.use("/users", usersRouter);
 app.use("/catalog", catalogRouter); // Add catalog routes to middleware chain.
 
 // catch 404 and forward to error handler
