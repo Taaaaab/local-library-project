@@ -3,13 +3,25 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const catalogRouter = require("./routes/catalog"); // Import routes for "catalog" area of site
+const compression = require("compression");
+const helmet = require("helmet");
+
+// Create the Express application object
+const app = express();
+
+app.use(compression()); // Compress all routes
+app.use(helmet()); // Helmet to protect against well-known  web vulnerabilities
+app.use(express.static(path.join(__dirname, "public")));
+
+app.use("/", indexRouter);
+app.use("/users", usersRouter);
+app.use("/catalog", catalogRouter); // Add catalog routes to middleware chain.
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const catalogRouter = require("./routes/catalog");
 //Import routes for "catalog" area of site
-
-var app = express();
 
 // Set up mongoose connection
 const mongoose = require("mongoose");
