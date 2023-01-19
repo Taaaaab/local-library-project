@@ -1,5 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
+require('dotenv').config()
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -16,7 +17,7 @@ var usersRouter = require('./routes/users');
 
 // Set up mongoose connection
 const mongoose = require("mongoose");
-const dev_db_url = "mongodb+srv://associate-developer:Adev-1234@cluster0.rhomd7n.mongodb.net/local_library?retryWrites=true&w=majority";
+const dev_db_url = process.env.MONGODB_URL;
 const mongoDB = process.env.MONGODB_URI || dev_db_url;
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
